@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sondaggio Telegram</title>
+  <script>
+    let stars = 0;
+    async function caricaUtente() {
+      const res = await fetch('/api/user');
+      const data = await res.json();
+      document.getElementById('stelle').textContent = data.stelle;
+      stars = data.stelle;
+    }
+    async function inviaSondaggio(risposta) {
+      const res = await fetch('/api/surveys', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ risposta })
+      });
+      const data = await res.json();
+      document.getElementById('stelle').textContent = data.stelle;
+      document.getElementById('sondaggio').style.display = 'none';
+      document.getElementById('grazie').style.display = 'block';
+    }
+    window.onload = caricaUtente;
+  </script>
+</head>
+<body style="font-family: sans-serif; text-align: center; padding: 20px;">
+  <h1>Benvenuto!</h1>
+  <p>Hai <strong id="stelle">0</strong> ⭐</p>
+  <div id="sondaggio">
+    <h2>Domanda: Ti piace questa Mini App?</h2>
+    <button onclick="inviaSondaggio('si')">Sì</button>
+    <button onclick="inviaSondaggio('no')">No</button>
+  </div>
+  <div id="grazie" style="display:none;">
+    <h2>Grazie per aver risposto!</h2>
+  </div>
+</body>
+</html>
