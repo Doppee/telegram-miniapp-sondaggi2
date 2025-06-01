@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MiniApp Telegram - Sondaggi</title>
+</head>
+<body>
+  <h1>Benvenuto!</h1>
+  <p>Hai <span id="stars">0</span> ⭐</p>
+  <button onclick="startSurvey()">Inizia il sondaggio</button>
+  <div id="survey" style="display:none;">
+    <h3>Sondaggio: Quanto ti piace Telegram?</h3>
+    <button onclick="submitAnswer('Molto')">Molto</button>
+    <button onclick="submitAnswer('Abbastanza')">Abbastanza</button>
+    <button onclick="submitAnswer('Poco')">Poco</button>
+  </div>
+  <script>
+    async function fetchStars() {
+      const res = await fetch('/api/user');
+      const data = await res.json();
+      document.getElementById('stars').innerText = data.stars;
+    }
+
+    function startSurvey() {
+      document.getElementById('survey').style.display = 'block';
+    }
+
+    async function submitAnswer(answer) {
+      await fetch('/api/surveys', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answer })
+      });
+      alert("Grazie per la tua risposta!");
+      fetchStars();
+      document.getElementById('survey').style.display = 'none';
+    }
+
+    fetchStars();
+  </script>
+</body>
+</html>
